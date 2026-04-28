@@ -1,4 +1,4 @@
-async function getCats() {
+async function getBreeds() {
   const res = await fetch(
     `https://api.thecatapi.com/v1/images/search?api_key=${process.env.CAT_API_KEY}&limit=8&has_breeds=1`,
   );
@@ -10,31 +10,36 @@ async function getCats() {
   return res.json();
 }
 
-export default async function Home() {
-  const cats = await getCats();
+export default async function CatBreeds() {
+  const cats = await getBreeds();
 
   return (
-    <div className="min-h-screen p-8">
-      <h1 className="text-2xl mb-4">The Cat API</h1>
+    <main className="flex flex-col items-center px-4 py-10">
+      <h1 className="mb-8 text-center text-3xl font-bold text-secondary">
+        The Cat API
+      </h1>
 
-      <main>
-        <div className="grid grid-cols-3 gap-1">
-          {cats.map((cat) => (
-            <div key={cat.id} className="border">
-              <figure className="h-48">
-                <img
-                  src={cat.url}
-                  alt={cat.breeds[0]?.name || "고양이"}
-                  className="w-full h-full"
-                />
-              </figure>
+      <div className="grid grid-cols-4 gap-4">
+        {cats.map((cat) => {
+          const breed = cat.breeds?.[0];
+
+          return (
+            <div key={cat.id} className="overflow-hidden rounded-[10px]">
+              <img
+                src={cat.url}
+                alt={breed?.name || "cat"}
+                className="h-[200px] w-full object-cover"
+              />
+
               <div className="p-2">
-                <h2>{cat.breeds[0]?.name || "고양이"}</h2>
+                <p className="text-center font-bold text-secondary">
+                  {breed?.name}
+                </p>
               </div>
             </div>
-          ))}
-        </div>
-      </main>
-    </div>
+          );
+        })}
+      </div>
+    </main>
   );
 }
